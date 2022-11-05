@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package Optimization;
+
+//ball positioning
+message BallPositioning {
+  double ballPosX = 1;
+  double ballPosY = 2;
+  double ballVelX = 3;
+  double ballVelY = 4;
+}
+
+//robot positioning
+message RobotPositioning {
+  double robotPosX = 1;
+  double robotPosY = 2;
+  double robotVelX = 3;
+  double robotVelY = 4;
+}
+
+message SetState {
+  bool setGameOn = 1;
+  bool setStop = 2;
+  bool setHalt = 3;
+  bool setFreeball1 = 4;
+  bool setFreeball2 = 5;
+  bool setFreeball3 = 6;
+  bool setFreeball4 = 7;
+}
+

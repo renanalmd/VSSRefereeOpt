@@ -52,6 +52,7 @@ private:
     QMutex _foulMutex;
     void updatePenaltiesInfo(VSSRef::Foul foul, VSSRef::Color foulTeam, VSSRef::Quadrant foulQuadrant, bool isManual = false);
     void sendPenaltiesToNetwork();
+    void receivePenaltiesFromNetwork();
 
     // Checker management
     QSignalMapper *_mapper;
