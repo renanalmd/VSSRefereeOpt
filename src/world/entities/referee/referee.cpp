@@ -37,8 +37,11 @@ Referee::Referee(Vision *vision, Replacer *replacer, SoccerView *soccerView, Con
 
     // Init signal mapper
     _mapper = new QSignalMapper();
+    std::cout << "vascio da ga maasdas6\n";
 
-    listenWizardThread = std::thread(&Referee::receivePenaltiesFromNetwork, this);
+
+    std::cout << "vascio da ga maasda7\n";
+
 }
 
 void Referee::initialization() {
@@ -91,12 +94,18 @@ void Referee::initialization() {
 
     // Connect
     connectClient();
+    std::cout << "vascio da ga maasdas3\n";
+
+    connectWizard();
+    std::cout << "vascio da ga maasdas4\n";
 
     // Debug network info
     std::cout << Text::blue("[REFEREE] ", true) + Text::bold("Module started at address '" + _refereeAddress.toStdString() + "' and port '" + std::to_string(_refereePort) + "'.") + '\n';
 
     // Call halfPassed (start game)
     halfPassed();
+
+    listenWizardThread = std::thread(&Referee::receivePenaltiesFromNetwork, this);
 }
 
 void Referee::loop() {
@@ -215,6 +224,8 @@ void Referee::finalization() {
 
     // Disconnect client
     disconnectClient();
+
+    disconnectWizard();
 
     // Thread finalization
     listenWizardThread.join();
@@ -373,11 +384,11 @@ void Referee::connectWizard() {
     QString _wizardAddress = "224.5.23.6";
     quint16 _wizardPort = 10007;
 
+    std::cout << "vascio da ga maasdas\n";
+
     // Connect to referee address and port
     _wizardClient->connectToHost(_wizardAddress, _wizardPort, QIODevice::ReadOnly, QAbstractSocket::IPv4Protocol);
-
-    // Connect to read data
-    connect(_wizardClient, SIGNAL(readyRead()), this, SLOT(readWizardDatagram()), Qt::UniqueConnection);
+    std::cout << "vascio da ga maasdas1\n";
 }
 
 void Referee::disconnectWizard() {
