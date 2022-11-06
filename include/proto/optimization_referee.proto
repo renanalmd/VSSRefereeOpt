@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package Optimization;
 
+import "vssref_common.proto";
+
 //ball positioning
 message BallPositioning {
   double ballPosX = 1;
@@ -19,12 +21,6 @@ message RobotPositioning {
 }
 
 message SetState {
-  bool setGameOn = 1;
-  bool setStop = 2;
-  bool setHalt = 3;
-  bool setFreeball1 = 4;
-  bool setFreeball2 = 5;
-  bool setFreeball3 = 6;
-  bool setFreeball4 = 7;
+  VSSRef.Foul foul = 1;
 }
 

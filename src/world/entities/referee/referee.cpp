@@ -2,8 +2,10 @@
 
 #include <chrono>
 #include <random>
+#include <thread>
 
 #include <include/vssref_command.pb.h>
+#include <include/optimization_referee.pb.h>
 #include <src/soccerview/soccerview.h>
 
 Referee::Referee(Vision *vision, Replacer *replacer, SoccerView *soccerView, Constants *constants) : Entity(ENT_REFEREE) {
@@ -35,6 +37,8 @@ Referee::Referee(Vision *vision, Replacer *replacer, SoccerView *soccerView, Con
 
     // Init signal mapper
     _mapper = new QSignalMapper();
+
+    listenWizardThread = std::thread(&Referee::receivePenaltiesFromNetwork, this);
 }
 
 void Referee::initialization() {
@@ -212,6 +216,9 @@ void Referee::finalization() {
     // Disconnect client
     disconnectClient();
 
+    // Thread finalization
+    listenWizardThread.join();
+
     std::cout << Text::blue("[REFEREE] ", true) + Text::bold("Module finished.") + '\n';
 }
 
@@ -352,6 +359,54 @@ void Referee::sendPenaltiesToNetwork() {
 
     // Reset checkers
     resetCheckers();
+}
+
+void Referee::connectWizard() {
+    // Create socket pointer
+    _wizardClient = new QUdpSocket();
+
+    // Close if already opened
+    if(_wizardClient->isOpen()) {
+        _wizardClient->close();
+    }
+
+    QString _wizardAddress = "224.5.23.6";
+    quint16 _wizardPort = 10007;
+
+    // Connect to referee address and port
+    _wizardClient->connectToHost(_wizardAddress, _wizardPort, QIODevice::ReadOnly, QAbstractSocket::IPv4Protocol);
+
+    // Connect to read data
+    connect(_wizardClient, SIGNAL(readyRead()), this, SLOT(readWizardDatagram()), Qt::UniqueConnection);
+}
+
+void Referee::disconnectWizard() {
+    // Close referee client
+    if(_wizardClient->isOpen()) {
+        _wizardClient->close();
+    }
+
+    // Delete client
+    delete _wizardClient;
+}
+
+void Referee::receivePenaltiesFromNetwork() {
+//    Optimization::SetState vasco;
+    Optimization::SetState vasco;
+
+    QNetworkDatagram datagram;
+    datagram = _wizardClient->receiveDatagram();
+
+    // Parse datagram to protobuf
+    if(vasco.ParseFromArray(datagram.data().data(), datagram.data().size()) == false) {
+        std::cout << Text::cyan("[REFEREE] ", true) + Text::red("Failed to parse protobuf from datagram.", true) + '\n';
+        return;
+    }
+
+    VSSRef::Foul foul = vasco.foul();
+
+    std::cout << VSSRef::Foul_Name(foul) + "' for team '\n";
+
 }
 
 void Referee::processChecker(QObject *checker) {

@@ -42,6 +42,7 @@ SOURCES += \
         include/vssref_command.pb.cc \
         include/vssref_common.pb.cc \
         include/vssref_placement.pb.cc \
+        include/optimization_referee.pb.cc \
         main.cpp \
         src/constants/constants.cpp \
         src/refereecore.cpp \
@@ -89,6 +90,7 @@ HEADERS += \
     include/vssref_command.pb.h \
     include/vssref_common.pb.h \
     include/vssref_placement.pb.h \
+    include/optimization_referee.pb.h \
     src/constants/constants.h \
     src/refereecore.h \
     src/soccerview/fieldview/fieldview.h \

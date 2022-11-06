@@ -40,6 +40,14 @@ private:
     void connectClient();
     void disconnectClient();
 
+    // Wizard client
+    QUdpSocket *_wizardClient;
+//    QString _wizardAddress;
+//    quint16 _wizardPort;
+    void connectWizard();
+    void disconnectWizard();
+    std::thread listenWizardThread;
+
     // Constants
     Constants *_constants;
     Constants* getConstants();
