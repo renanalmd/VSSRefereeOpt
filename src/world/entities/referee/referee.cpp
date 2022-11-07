@@ -105,6 +105,7 @@ void Referee::initialization() {
     // Call halfPassed (start game)
     halfPassed();
 
+    closeThread = false;
     listenWizardThread = std::thread(&Referee::receivePenaltiesFromNetwork, this);
 }
 
@@ -386,9 +387,17 @@ void Referee::connectWizard() {
 
     std::cout << "vascio da ga maasdas\n";
 
-    // Connect to referee address and port
-    _wizardClient->connectToHost(_wizardAddress, _wizardPort, QIODevice::ReadOnly, QAbstractSocket::IPv4Protocol);
-    std::cout << "vascio da ga maasdas1\n";
+    // Binding replacer in defined network data
+    if(_wizardClient->bind(QHostAddress(_wizardAddress), _wizardPort, QUdpSocket::ShareAddress) == false) {
+        std::cout << Text::blue("[VISION] " , true) << Text::red("Error while binding socket.", true) + '\n';
+        return ;
+    }
+
+    // Joining multicast group
+    if(_wizardClient->joinMulticastGroup(QHostAddress(_wizardAddress)) == false) {
+        std::cout << Text::blue("[VISION] ", true) << Text::red("Error while joining multicast.", true) + '\n';
+        return ;
+    }
 }
 
 void Referee::disconnectWizard() {
@@ -406,17 +415,21 @@ void Referee::receivePenaltiesFromNetwork() {
     Optimization::SetState vasco;
 
     QNetworkDatagram datagram;
-    datagram = _wizardClient->receiveDatagram();
 
-    // Parse datagram to protobuf
-    if(vasco.ParseFromArray(datagram.data().data(), datagram.data().size()) == false) {
-        std::cout << Text::cyan("[REFEREE] ", true) + Text::red("Failed to parse protobuf from datagram.", true) + '\n';
-        return;
+    while (not closeThread) {
+        datagram = _wizardClient->receiveDatagram();
+
+        // Parse datagram to protobuf
+        if(vasco.ParseFromArray(datagram.data().data(), datagram.data().size()) == false) {
+            std::cout << Text::cyan("[REFEREE] ", true) + Text::red("Failed to parse protobuf from datagram.", true) + '\n';
+            return;
+        }
+
+        VSSRef::Foul foul = vasco.foul();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::cout << VSSRef::Foul_Name(foul) + "' for team '\n";
     }
-
-    VSSRef::Foul foul = vasco.foul();
-
-    std::cout << VSSRef::Foul_Name(foul) + "' for team '\n";
 
 }
 

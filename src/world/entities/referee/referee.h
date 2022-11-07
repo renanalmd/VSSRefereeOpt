@@ -47,6 +47,7 @@ private:
     void connectWizard();
     void disconnectWizard();
     std::thread listenWizardThread;
+    std::atomic<bool> closeThread;
 
     // Constants
     Constants *_constants;
