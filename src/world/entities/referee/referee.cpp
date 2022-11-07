@@ -421,6 +421,9 @@ void Referee::receivePenaltiesFromNetwork() {
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         std::cout << VSSRef::Foul_Name(foul) + "' for team '\n";
+
+        // set foul received
+        sendControlFoul(foul);
     }
 
 }
