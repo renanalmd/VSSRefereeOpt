@@ -37,11 +37,6 @@ Referee::Referee(Vision *vision, Replacer *replacer, SoccerView *soccerView, Con
 
     // Init signal mapper
     _mapper = new QSignalMapper();
-    std::cout << "vascio da ga maasdas6\n";
-
-
-    std::cout << "vascio da ga maasda7\n";
-
 }
 
 void Referee::initialization() {
@@ -94,10 +89,7 @@ void Referee::initialization() {
 
     // Connect
     connectClient();
-    std::cout << "vascio da ga maasdas3\n";
-
     connectWizard();
-    std::cout << "vascio da ga maasdas4\n";
 
     // Debug network info
     std::cout << Text::blue("[REFEREE] ", true) + Text::bold("Module started at address '" + _refereeAddress.toStdString() + "' and port '" + std::to_string(_refereePort) + "'.") + '\n';
@@ -385,17 +377,15 @@ void Referee::connectWizard() {
     QString _wizardAddress = "224.5.23.6";
     quint16 _wizardPort = 10007;
 
-    std::cout << "vascio da ga maasdas\n";
-
     // Binding replacer in defined network data
     if(_wizardClient->bind(QHostAddress(_wizardAddress), _wizardPort, QUdpSocket::ShareAddress) == false) {
-        std::cout << Text::blue("[VISION] " , true) << Text::red("Error while binding socket.", true) + '\n';
+        std::cout << Text::blue("[OPT] " , true) << Text::red("Error while binding socket.", true) + '\n';
         return ;
     }
 
     // Joining multicast group
     if(_wizardClient->joinMulticastGroup(QHostAddress(_wizardAddress)) == false) {
-        std::cout << Text::blue("[VISION] ", true) << Text::red("Error while joining multicast.", true) + '\n';
+        std::cout << Text::blue("[OPT] ", true) << Text::red("Error while joining multicast.", true) + '\n';
         return ;
     }
 }
@@ -411,21 +401,23 @@ void Referee::disconnectWizard() {
 }
 
 void Referee::receivePenaltiesFromNetwork() {
-//    Optimization::SetState vasco;
-    Optimization::SetState vasco;
-
+    Optimization::SetState stateReceived;
     QNetworkDatagram datagram;
 
     while (not closeThread) {
         datagram = _wizardClient->receiveDatagram();
 
+        if(!datagram.isValid()) {
+            continue;
+        }
+
         // Parse datagram to protobuf
-        if(vasco.ParseFromArray(datagram.data().data(), datagram.data().size()) == false) {
-            std::cout << Text::cyan("[REFEREE] ", true) + Text::red("Failed to parse protobuf from datagram.", true) + '\n';
+        if(stateReceived.ParseFromArray(datagram.data().data(), datagram.data().size()) == false) {
+            std::cout << Text::cyan("[OPT] ", true) + Text::red("Failed to parse protobuf from datagram.", true) + '\n';
             return;
         }
 
-        VSSRef::Foul foul = vasco.foul();
+        VSSRef::Foul foul = stateReceived.foul();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         std::cout << VSSRef::Foul_Name(foul) + "' for team '\n";
