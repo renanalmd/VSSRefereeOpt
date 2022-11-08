@@ -420,10 +420,10 @@ void Referee::receivePenaltiesFromNetwork() {
         VSSRef::Foul foul = stateReceived.foul();
 
         std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-        std::cout << VSSRef::Foul_Name(foul) + "' for team '\n";
+        std::cout << Text::cyan("[OPT] ", true) + Text::red("Received foul: ", true) << VSSRef::Foul_Name(foul) + "\n";
 
         // set foul received
-        sendControlFoul(foul);
+        takeManualFoul(foul,VSSRef::Color::NONE, VSSRef::Quadrant::NO_QUADRANT);
     }
 
 }
