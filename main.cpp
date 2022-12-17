@@ -31,8 +31,13 @@ int main(int argc, char *argv[])
     QCommandLineOption use3v3Option("3v3", "Use referee in 3v3 mode");
     parser.addOption(use3v3Option);
 
+    QCommandLineOption noGUIOption("noGUI", "For noGUI mode");
+    parser.addOption(noGUIOption);
+
     // Process parser in app
     parser.process(app);
+
+    bool noGUI = parser.isSet(noGUIOption);
 
     // Setup ExitHandler
     ExitHandler::setApplication(&app);
@@ -51,7 +56,7 @@ int main(int argc, char *argv[])
     }
 
     // Initializating referee core
-    RefereeCore *refereeCore = new RefereeCore(constants);
+    RefereeCore *refereeCore = new RefereeCore(constants, noGUI);
     refereeCore->start();
 
     // Wait for app exec

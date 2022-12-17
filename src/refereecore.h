@@ -11,7 +11,7 @@
 class RefereeCore
 {
 public:
-    RefereeCore(Constants *constants);
+    RefereeCore(Constants *constants, bool noGUI = false);
     ~RefereeCore();
 
     // Internal
@@ -32,6 +32,8 @@ private:
     // Constants
     Constants *_constants;
     Constants* getConstants();
+
+    bool noGUI;
 };
 
 #endif // REFEREECORE_H

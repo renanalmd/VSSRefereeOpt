@@ -1,6 +1,6 @@
 #include "refereecore.h"
 
-RefereeCore::RefereeCore(Constants *constants) {
+RefereeCore::RefereeCore(Constants *constants, bool noGUI) : noGUI(noGUI) {
     // Taking constants
     _constants = constants;
 
@@ -65,7 +65,9 @@ void RefereeCore::start() {
     QObject::connect(_vision, SIGNAL(visionUpdated()), _soccerView->getFieldView(), SLOT(updateField()));
 
     // Show GUI
-    _soccerView->show();
+    if(!noGUI) {
+        _soccerView->show();
+    }
 
     // Starting entities
     _world->startEntities();
