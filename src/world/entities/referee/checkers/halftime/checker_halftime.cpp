@@ -24,7 +24,7 @@ void Checker_HalfTime::run() {
         _timer.stop();
 
         // Add passed time to seconds
-        if(!_isPenaltyShootout) _secondsPassed += _timer.getSeconds();
+//        if(!_isPenaltyShootout) _secondsPassed += _timer.getSeconds();
 
         // Check if half passed
         if(_secondsPassed >= halfTime) {
