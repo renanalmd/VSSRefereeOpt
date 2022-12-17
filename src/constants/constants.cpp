@@ -88,6 +88,8 @@ void Constants::readRefereeConstants() {
     _maintainSpeedAtSuggestions = foulsMap["maintainSpeedAtSuggestions"].toBool();
     std::cout << Text::purple("[CONSTANTS] ", true) << Text::bold("Loaded maintainSpeedAtSuggestions: '" + std::to_string(_maintainSpeedAtSuggestions) + "'\n");
 
+    _noGUI = refereeMap["noGUI"].toBool();
+
 }
 
 void Constants::readVisionConstants() {
@@ -216,6 +218,10 @@ void Constants::setIs5v5(bool is5v5) {
 
 bool Constants::is5v5() {
     return _is5v5;
+}
+
+bool Constants::noGUI() {
+    return _noGUI;
 }
 
 QString Constants::visionAddress() {

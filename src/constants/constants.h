@@ -33,6 +33,7 @@ public:
     bool maintainSpeedAtSuggestions();
     void setIs5v5(bool is5v5);
     bool is5v5();
+    bool noGUI();
 
     // Vision constants getters
     QString visionAddress();
@@ -86,6 +87,7 @@ private:
     bool _useRefereeSuggestions;
     bool _maintainSpeedAtSuggestions;
     bool _is5v5;
+    bool _noGUI;
     void readRefereeConstants();
 
     // Vision constants
